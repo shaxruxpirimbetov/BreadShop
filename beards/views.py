@@ -20,6 +20,7 @@ class OrderApi(APIView):
 
 		orders = Order.objects.all()
 		orders = OrderSerializer(orders, many=True).data
+		# Order.objects.all().delete()
 		return Response({"status": True, "message": orders})
 
 	def post(self, request):
@@ -47,6 +48,7 @@ class OrderApi(APIView):
 	def put(self, request):
 		order_id = request.data.get("order_id")
 		status = request.data.get("status")
+		print(request.data)
 		if not all([order_id, status]):
 			return Response({"status": False, "message": "order_id and status are required"})
 
