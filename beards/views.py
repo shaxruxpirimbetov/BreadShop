@@ -12,31 +12,38 @@ from .serializers import OrderSerializer
 class OrderApi(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	def get(self, request):
+		order_id = request.GET.get("order_id")
+		if order_id:
+			order = Order.objects.filter(id=order_id).first()
+			order = OrderSerializer(order).data
+			return Response(order)
+
 		orders = Order.objects.all()
 		orders = OrderSerializer(orders, many=True).data
 		return Response({"status": True, "message": orders})
-	
+
 	def post(self, request):
 		data = request.data
 		order = data.get("order")
 		username = data.get("username")
 		phone = data.get("phone")
 		# total_price = data.get("total_price")
-		
+
 		print(data)
-		
+
 		if not all([order, username, phone]):
 			return Response({"status": False, "message": "order, username, phone and total_price are required"})
-		
+
 		order = Order.objects.create(
-		    order=order,
-		    username=username,
-		    phone=phone
-		    # total_price=total_price
+			user=request.user,
+			order=order,
+			username=username,
+			phone=phone
+			# total_price=total_price
 		)
 		order = OrderSerializer(order).data
 		return Response(order)
-	
+
 	def put(self, request):
 		return Response({"status": True})
 
