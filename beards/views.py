@@ -45,6 +45,17 @@ class OrderApi(APIView):
 		return Response(order)
 
 	def put(self, request):
-		return Response({"status": True})
+		order_id = request.data.get("order_id")
+		status = request.data.get("status")
+		if not all([order_id, status]):
+			return Response({"status": False, "message": "order_id and status are required"})
+
+		order = Order.objects.filter(id=order_id).first()
+		if not order:
+			return Response({"status": False, "message": "Order not found"})
+		order.status = status
+		order.save()
+		order = OrderSerializer(order).data
+		return Response(order)
 
 
