@@ -7,6 +7,7 @@ from rest_framework import permissions
 from django.shortcuts import render
 from .serializers import UserSerializer
 
+
 class RegisterApi(APIView):
 	permission_classes = [permissions.AllowAny]
 	def post(self, request):
